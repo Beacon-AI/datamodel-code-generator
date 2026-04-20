@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from datamodel_code_generator.model import DataModelFieldBase
 from datamodel_code_generator.model.pydantic_v2.root_model import RootModel
 from datamodel_code_generator.reference import Reference
@@ -69,3 +71,43 @@ def test_root_model_custom_base_class_is_ignored():
         'class TestRootModel(RootModel[Optional[str]]):\n'
         "    root: Optional[str] = 'abc'"
     )
+
+
+def test_root_model_ignores_allow_extra_fields() -> None:
+    """RootModel must not produce model_config even when allow_extra_fields is set."""
+    etd = defaultdict(dict)
+    etd['TestRootModel']['allow_extra_fields'] = True
+    root_model = RootModel(
+        fields=[
+            DataModelFieldBase(
+                name='a',
+                data_type=DataType(type='str'),
+                required=False,
+            )
+        ],
+        reference=Reference(name='TestRootModel', path='test_root_model'),
+        extra_template_data=etd,
+    )
+    rendered = root_model.render()
+    assert 'model_config' not in rendered
+    assert 'extra' not in rendered
+
+
+def test_root_model_ignores_extra_fields_option() -> None:
+    """RootModel must not produce model_config even when extra_fields='allow' is set."""
+    etd = defaultdict(dict)
+    etd['TestRootModel']['extra_fields'] = 'allow'
+    root_model = RootModel(
+        fields=[
+            DataModelFieldBase(
+                name='a',
+                data_type=DataType(type='str'),
+                required=False,
+            )
+        ],
+        reference=Reference(name='TestRootModel', path='test_root_model'),
+        extra_template_data=etd,
+    )
+    rendered = root_model.render()
+    assert 'model_config' not in rendered
+    assert 'extra' not in rendered
