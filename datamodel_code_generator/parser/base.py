@@ -360,6 +360,7 @@ class Parser(ABC):
         allow_population_by_field_name: bool = False,
         apply_default_values_for_required_fields: bool = False,
         allow_extra_fields: bool = False,
+        extra_fields: Optional[str] = None,
         force_optional_for_required_fields: bool = False,
         class_name: Optional[str] = None,
         use_standard_collections: bool = False,
@@ -498,6 +499,9 @@ class Parser(ABC):
 
         if allow_extra_fields:
             self.extra_template_data[ALL_MODEL]['allow_extra_fields'] = True
+
+        if extra_fields:
+            self.extra_template_data[ALL_MODEL]['extra_fields'] = extra_fields
 
         if enable_faux_immutability:
             self.extra_template_data[ALL_MODEL]['allow_mutation'] = False

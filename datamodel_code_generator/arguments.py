@@ -96,10 +96,17 @@ base_options.add_argument(
 # ======================================================================================
 # Customization options for generated models
 # ======================================================================================
-model_options.add_argument(
+_extra_fields_group = model_options.add_mutually_exclusive_group()
+_extra_fields_group.add_argument(
     '--allow-extra-fields',
-    help='Allow passing extra fields, if this flag is not passed, extra fields are forbidden.',
+    help='Allow passing extra fields (deprecated: use --extra-fields=allow instead).',
     action='store_true',
+    default=None,
+)
+_extra_fields_group.add_argument(
+    '--extra-fields',
+    help='Set generated models to allow, forbid, or ignore extra fields.',
+    choices=['allow', 'forbid', 'ignore'],
     default=None,
 )
 model_options.add_argument(
